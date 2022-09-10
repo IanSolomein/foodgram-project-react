@@ -4,6 +4,7 @@ from django.core import validators
 
 User = get_user_model()
 
+
 class Tag(models.Model):
     RED = '#FF0000'
     ORANGE = '#FF8000'
@@ -38,7 +39,8 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
-    
+
+
 class Ingredient(models.Model):
     name = models.CharField(max_length=200,
                             verbose_name='Название ингредиента')
@@ -115,6 +117,7 @@ class IngredientAmount(models.Model):
             models.UniqueConstraint(fields=['ingredient', 'recipe'],
                                     name='unique ingredients recipe')
         ]
+
 
 class Favorite(models.Model):
     user = models.ForeignKey(
