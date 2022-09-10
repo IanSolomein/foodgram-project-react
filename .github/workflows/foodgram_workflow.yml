@@ -39,7 +39,14 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Push to Docker Hub
+      - name: Push to Docker Hub Frontend
+        uses: docker/build-push-action@v2
+        with:
+          context: ./frontend
+          file: ./frontend/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/foodgram-frontend:latest
+      - name: Push to Docker Hub Backend
         uses: docker/build-push-action@v2
         with:
           context: ./backend
@@ -60,9 +67,10 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram-frontend
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram-backend
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram-frontend
             sudo docker-compose stop
+            sudo docker-compose rm frontend
             sudo docker-compose rm backend
             rm .env
             touch .env
@@ -73,7 +81,7 @@ jobs:
             echo DB_HOST=${{ secrets.DB_HOST }} >> .env
             echo DB_PORT=${{ secrets.DB_PORT }} >> .env
             echo DJ_SECRET_KEY=${{ secrets.DJ_SECRET_KEY }} >> .env
-            sudo docker-compose up -d
+            sudo docker-compose up -d --build
   telegram_message:
     name: Send telegram message
     runs-on: ubuntu-latest
