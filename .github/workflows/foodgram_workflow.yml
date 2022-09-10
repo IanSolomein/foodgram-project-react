@@ -81,6 +81,7 @@ jobs:
             echo DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} >> .env
             sudo docker-compose up -d
 
+
   telegram_message:
     name: Send telegram message
     runs-on: ubuntu-latest
@@ -92,4 +93,4 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
-          message: ${{ github.workflow }} успешно выполнен!
+          message: ${{ github.workflow }} успешно выполнен!!
