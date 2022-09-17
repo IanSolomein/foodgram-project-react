@@ -1,10 +1,10 @@
+from api.serializers import CropRecipeSerializer
 from django.contrib.auth import get_user_model
 from djoser.serializers import UserCreateSerializer, UserSerializer
-from rest_framework.fields import SerializerMethodField
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
+from rest_framework.fields import SerializerMethodField
 from users.models import Subscribe
-from api.serializers import CropRecipeSerializer
 
 User = get_user_model()
 
