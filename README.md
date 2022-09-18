@@ -106,3 +106,7 @@ sudo docker-compose up -d --build
 
 ## Проект в интернете
 Проект запущен и доступен по [адресу](http://51.250.64.150/recipes)
+
+Логин: admin
+Пароль: admin
+E-mail: admin@admin.ru

@@ -10,7 +10,7 @@ services:
 
   backend:
     image: iansolomein/foodgram-backend:latest
-    restart: always
+    restart: unless-stopped
     volumes:
       - static_value:/code/static/
       - media_value:/code/media/

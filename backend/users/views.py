@@ -1,5 +1,5 @@
-from api.pagination import LimitPageNumberPagination
-from .serializers import CustomUserSerializer, SubscribeSerializer
+from api.pagination import CustomPagination
+from api.serializers import CustomUserSerializer, SubscribeSerializer
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
@@ -16,7 +16,7 @@ User = get_user_model()
 class CustomUserViewSet(UserViewSet):
     queryset = User.objects.all()
     serializer_class = CustomUserSerializer
-    pagination_class = LimitPageNumberPagination
+    pagination_class = CustomPagination
 
     @action(
         detail=True,
