@@ -1,10 +1,14 @@
+import environ
+
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-fnyd0-*k^5#wpio-b$wdp$_l3up1%b5sieesth#_@cm33#pfsp')
+env = environ.Env()
+env.read_env(os.path.join(BASE_DIR, '.env'))
 
-DEBUG = False
+SECRET_KEY = 'django-insecure-fnyd0-*k^5#wpio-b$wdp$_l3up1%b5sieesth#_@cm33#pfsp'
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -58,12 +62,12 @@ WSGI_APPLICATION = 'foodgram.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': os.environ.get('DB_ENGINE', default="django.db.backends.postgresql"),
-        'NAME': os.environ.get('DB_NAME', default="postgres"),
-        'USER': os.environ.get('POSTGRES_USER', default="postgres"),
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', default="postgres"),
-        'HOST': os.environ.get('DB_HOST', default="db"),
-        'PORT': os.environ.get('DB_PORT', default="5432"),
+        'ENGINE': env('DB_ENGINE'),
+        'NAME': env('DB_NAME'),
+        'USER': env('POSTGRES_USER'),
+        'PASSWORD': env('POSTGRES_PASSWORD'),
+        'HOST': env('DB_HOST'),
+        'PORT': env('DB_PORT')
     }
 }
 

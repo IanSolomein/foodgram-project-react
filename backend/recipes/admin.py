@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.admin import display
 
 from .models import (Favourite, Ingredient, IngredientInRecipe, Recipe,
                      ShoppingCart, Tag)
@@ -6,10 +7,12 @@ from .models import (Favourite, Ingredient, IngredientInRecipe, Recipe,
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'author', 'count_favorites')
-    list_filter = ('author', 'name', 'tags')
+    list_display = ('name', 'id', 'author', 'added_in_favorites')
+    readonly_fields = ('added_in_favorites',)
+    list_filter = ('author', 'name', 'tags',)
 
-    def count_favorites(self, obj):
+    @display(description='Количество в избранных')
+    def added_in_favorites(self, obj):
         return obj.favorites.count()
 
 
