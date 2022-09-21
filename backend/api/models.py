@@ -2,11 +2,11 @@ from django.contrib.auth import get_user_model
 from django.core import validators
 from django.db import models
 from django.http import HttpResponse
-from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 
 User = get_user_model()
 
