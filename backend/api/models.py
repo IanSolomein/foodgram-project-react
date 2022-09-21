@@ -1,6 +1,12 @@
 from django.contrib.auth import get_user_model
 from django.core import validators
 from django.db import models
+from django.http import HttpResponse
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfgen import canvas
 
 User = get_user_model()
 
@@ -20,29 +26,93 @@ class Ingredient(models.Model):
                                     name='unique ingredient')
         ]
 
+    @action(detail=False, methods=['get'],
+            permission_classes=[IsAuthenticated])
+    def download_shopping_cart(self, request):
+        final_list = {}
+        ingredients = IngredientAmount.objects.filter(
+            recipe__cart__user=request.user).values_list(
+            'ingredient__name', 'ingredient__measurement_unit',
+            'amount')
+        for item in ingredients:
+            name = item[0]
+            if name not in final_list:
+                final_list[name] = {
+                    'measurement_unit': item[1],
+                    'amount': item[2]
+                }
+            else:
+                final_list[name]['amount'] += item[2]
+        pdfmetrics.registerFont(
+            TTFont('Slimamif', 'Slimamif.ttf', 'UTF-8'))
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = ('attachment; '
+                                           'filename="shopping_list.pdf"')
+        page = canvas.Canvas(response)
+        page.setFont('Slimamif', size=24)
+        page.drawString(200, 800, 'Список ингредиентов')
+        page.setFont('Slimamif', size=16)
+        height = 750
+        for i, (name, data) in enumerate(final_list.items(), 1):
+            page.drawString(75, height, (f'<{i}> {name} - {data["amount"]}, '
+                                         f'{data["measurement_unit"]}'))
+            height -= 25
+        page.showPage()
+        page.save()
+        return response
+
     def __str__(self):
         return self.name
 
 
 class Tag(models.Model):
-    BLUE = '#0000FF'
-    ORANGE = '#FFA500'
-    GREEN = '#008000'
-    PURPLE = '#800080'
+
+    RED = '#FF0000'
+
+    ORANGE = '#FF8000'
+
     YELLOW = '#FFFF00'
 
+    GREEN = '#00FF00'
+
+    CYAN = '#00FFFF'
+
+    BLUE = '#0000FF'
+
+    PURPLE = '#800080'
+
+    MAGENTA = '#FF00FF'
+
     COLOR_CHOICES = [
-        (BLUE, 'Синий'),
+
+        (RED, 'Красный'),
+
         (ORANGE, 'Оранжевый'),
-        (GREEN, 'Зеленый'),
-        (PURPLE, 'Фиолетовый'),
+
         (YELLOW, 'Желтый'),
+
+        (GREEN, 'Зеленый'),
+
+        (CYAN, 'Циановый'),
+
+        (BLUE, 'Синий'),
+
+        (PURPLE, 'Фиолетовый'),
+
+        (MAGENTA, 'Маджента'),
+
     ]
+
     name = models.CharField(max_length=200, unique=True,
+
                             verbose_name='Название тега')
+
     color = models.CharField(max_length=7, unique=True, choices=COLOR_CHOICES,
+
                              verbose_name='Цвет в HEX')
+
     slug = models.SlugField(max_length=200, unique=True,
+
                             verbose_name='Уникальный слаг')
 
     class Meta:
